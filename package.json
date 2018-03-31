@@ -4,7 +4,8 @@
   "description": "A javascript interpreter for a JSON scripting language",
   "main": "src/interpreter.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "demo": "node \"demo/index.js\""
   },
   "author": "Dan Fessler <fezzinate@gmail.com>",
   "license": "MIT"
