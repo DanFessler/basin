@@ -1,6 +1,6 @@
 # BASON Script
-A lightweight Javascript interpreter for a JSON-based scripting language.  
-**BASON** is an acronym for: **B**asic  **A**bstract  **S**yntax  **O**bject  **N**otation
+A lightweight interpreter for a JSON scripting language built in javascript.  
+**BASON** is an acronym for: **B**asic  **A**bstract  **S**yntax  **O**bject  **N**otation**.**
 
 # Syntax
 * A `Program` in BASON Script is contstructed as a valid JSON object and contains a script
@@ -48,6 +48,9 @@ This program prints the numbers 1 to 10 to the console using the `REPEAT` comman
 ~~~
 Here we define a new function called `GREET` with an input parameter called `name`.  Once it has been defined, we can use it the same as any other command.  Presently, functions are not [hoisted](https://developer.mozilla.org/en-US/docs/Glossary/Hoisting), so you must declare a function before it is used in a script.
 Functions are locally scoped, so any variables or functions declared in them will not be accessible outside and will [shadow](https://en.wikipedia.org/wiki/Variable_shadowing) anything of the same name in the outer scope.
+
+# Language
+* [Full BISON language reference](language.md)
 
 # But why?
 BASON Script's syntax is obviously painful to write, so why would you want to use it?  Well it has a couple of interesting use cases.
