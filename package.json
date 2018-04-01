@@ -1,7 +1,7 @@
 {
-  "name": "json-script",
+  "name": "bason-script",
   "version": "1.0.0",
-  "description": "A javascript interpreter for a JSON scripting language",
+  "description": "A Javascript interpreter for a JSON scripting language",
   "main": "src/interpreter.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
