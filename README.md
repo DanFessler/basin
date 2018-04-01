@@ -1,6 +1,6 @@
 # BASON Script
 A lightweight interpreter for a JSON scripting language built in javascript.  
-**BASON** is an acronym for: **B**asic  **A**bstract  **S**yntax  **O**bject  **N**otation**.**
+**BASON** is an acronym for Basic  Abstract  Syntax  Object  Notation.
 
 # Syntax
 * A `Program` in BASON Script is contstructed as a valid JSON object and contains a script
@@ -29,10 +29,13 @@ In this example we define a variable with the `LET` command.  `LET` takes two pa
 ~~~javascript
 [
   { LET: ['i', 0] },
-  { REPEAT: 10, script: [
-    { SET: ['i', { ADD: [ {i: null}, 1 ] }] },
-    { PRINT: {i: null} },
-  ] }
+  {
+    REPEAT: 10,
+    script: [
+      { SET: ['i', { ADD: [ {i: null}, 1 ] }] },
+      { PRINT: {i: null} },
+    ]
+  }
 ]
 ~~~
 This program prints the numbers 1 to 10 to the console using the `REPEAT` command. Any command which executes a script such as loops takes a special object property called "script" who's value is a `script` array.
@@ -40,9 +43,12 @@ This program prints the numbers 1 to 10 to the console using the `REPEAT` comman
 #### Functions:
 ~~~javascript
 [
-  { FUNCTION: ['GREET', 'name'], script: [
-    { PRINT: { ADD: ['Hello ', { name: null }] } }
-  ] },
+  {
+    FUNCTION: ['GREET', 'name'],
+    script: [
+      { PRINT: { ADD: ['Hello ', {name: null}] } }
+    ]
+  },
   { GREET: 'Dan' }
 ]
 ~~~
