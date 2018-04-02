@@ -11,7 +11,7 @@ A lightweight interpreter for a JSON scripting language built in javascript.
 # Examples
 
 #### Hello World:
-~~~json
+~~~javascript
 [
   { "PRINT": "Hello World!" }
 ]
@@ -19,7 +19,7 @@ A lightweight interpreter for a JSON scripting language built in javascript.
 Each program is an array of expressions, and therefore wrapped in square brackets. This script only has one expression, an object whos key is the name of the command, in this case `PRINT`, and we supply it with a string literal which results in the text "Hello World!" printing to the console.
 
 #### Using Variables:
-~~~json
+~~~javascript
 [
   { "LET": ["myvar", "World!"] },
   { "PRINT": { "ADD": [ "Hello ", {"myvar": null} ] } }
@@ -28,7 +28,7 @@ Each program is an array of expressions, and therefore wrapped in square bracket
 In this example we define a variable with the `LET` command.  `LET` takes two parameters, the name of the variable and its value.  We then use the `ADD` function to join the text "Hello " with the value of `myvar` to get "Hello World!" and print the result to the console with `PRINT`. In BASON Script, Variables are referenced as objects with a `null` value.
 
 #### Using Loops:
-~~~json
+~~~javascript
 [
   { "LET": ["i", 0] },
   {
@@ -43,7 +43,7 @@ In this example we define a variable with the `LET` command.  `LET` takes two pa
 This program prints the numbers 1 to 10 to the console using the `REPEAT` command. Any command which executes a script such as loops takes a special object property called "script" who's value is a `script` array.
 
 #### Functions:
-~~~json
+~~~javascript
 [
   {
     "FUNCTION": ["GREET", "name"],
