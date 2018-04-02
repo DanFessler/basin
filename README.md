@@ -5,7 +5,7 @@ A lightweight AST (abstract syntax tree) interpreter built in javascript.
 
 # Syntax
 While BASON does not include a parser, You can write programs directly in JSON.  
-* A `Program` in BASON Script is contstructed as a valid JSON object and contains a script
+* A `Program` in BASON is contstructed as a valid JSON object and contains a script
 * A `Script` is an array of expressions to be evaluated.
 * An `Expression` is a literal (`string` or `number`), or an object who's key is a keyword (`Command`, `Function`, or `Variable`) and value is its input parameter(s).
 * `Parameters` are also an array of expressions. If there's only one parameter, there's no need for the containing array.
