@@ -9,6 +9,7 @@ While BASON does not include a parser, You can write programs directly in JSON.
 * A `Script` is an array of expressions to be evaluated.
 * An `Expression` is a literal (`string` or `number`), or an object who's key is a keyword (`Command`, `Function`, or `Variable`) and value is its input parameter(s).
 * `Parameters` are also an array of expressions. If there's only one parameter, there's no need for the containing array.
+* If you're looking for a simpler syntax, check out the [bason-funky](https://github.com/DanFessler/bason-funky) parser
 
 # Examples
 
