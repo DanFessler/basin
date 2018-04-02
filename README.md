@@ -27,7 +27,7 @@ Each program is an array of expressions, and therefore wrapped in square bracket
   { "PRINT": { "ADD": [ "Hello ", {"myvar": null} ] } }
 ]
 ~~~
-In this example we define a variable with the `LET` command which takes two parameters: the name of the variable and its value.  We then use the `ADD` function to join the text "Hello " with the value of `myvar` to get "Hello World!." In BASON Script, Variables are referenced as objects with a `null` value.
+In this example we define a variable with the `LET` command which takes two parameters: the name of the variable and its value.  We then use the `ADD` function to join the text "Hello " with the value of `myvar` to get "Hello World!" In BASON Script, Variables are referenced as objects with a `null` value.
 
 #### Using Loops:
 ~~~javascript
@@ -63,7 +63,7 @@ Functions are locally scoped, so any variables or functions declared in them wil
 * [Full BASON language reference](language.md)
 
 # But why?
-BASON Script's syntax is obviously painful to write, so why would you want to use it?  Well it has a couple of interesting use cases.
+BASON's syntax is obviously painful to write, so why would you want to use it?  Well it has a couple of interesting use cases:
 * A safe method of transmitting and executing arbitrary server-side code in a sand-boxed environment.
 * BASON's data format is an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree), making it an ideal target interpreter for creating new languages and parsers.
 
@@ -75,7 +75,7 @@ npm install bason --save
 # Usage
 Import the package, define your program, and run it with `BASON.RUN()`
 ~~~javascript
-let BASON = require('bason-script')
+let BASON = require('bason')
 
 let program = [
   { "LET": ["myvar", "World!"] },
