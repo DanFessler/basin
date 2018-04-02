@@ -8,5 +8,18 @@
     "demo": "node \"demo/index.js\""
   },
   "author": "Dan Fessler <fezzinate@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanFessler/bason-script.git"
+  },
+  "keywords": [
+    "javascript",
+    "interpreter",
+    "ast"
+  ],
+  "bugs": {
+    "url": "https://github.com/DanFessler/bason-script/issues"
+  },
+  "homepage": "https://github.com/DanFessler/bason-script#readme"
 }
