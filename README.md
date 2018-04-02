@@ -1,8 +1,10 @@
-# BASON Script
-A lightweight interpreter for a JSON scripting language built in javascript.  
+# BASON
+
+A lightweight AST (abstract syntax tree) interpreter built in javascript.  
 **BASON** is an acronym for Basic  Abstract  Syntax  Object  Notation.
 
 # Syntax
+While BASON does not include a parser, You can write programs directly in JSON.  
 * A `Program` in BASON Script is contstructed as a valid JSON object and contains a script
 * A `Script` is an array of expressions to be evaluated.
 * An `Expression` is a literal (`string` or `number`), or an object who's key is a keyword (`Command`, `Function`, or `Variable`) and value is its input parameter(s).
@@ -25,7 +27,7 @@ Each program is an array of expressions, and therefore wrapped in square bracket
   { "PRINT": { "ADD": [ "Hello ", {"myvar": null} ] } }
 ]
 ~~~
-In this example we define a variable with the `LET` command.  `LET` takes two parameters, the name of the variable and its value.  We then use the `ADD` function to join the text "Hello " with the value of `myvar` to get "Hello World!" and print the result to the console with `PRINT`. In BASON Script, Variables are referenced as objects with a `null` value.
+In this example we define a variable with the `LET` command which takes two parameters: the name of the variable and its value.  We then use the `ADD` function to join the text "Hello " with the value of `myvar` to get "Hello World!." In BASON Script, Variables are referenced as objects with a `null` value.
 
 #### Using Loops:
 ~~~javascript
@@ -63,7 +65,7 @@ Functions are locally scoped, so any variables or functions declared in them wil
 # But why?
 BASON Script's syntax is obviously painful to write, so why would you want to use it?  Well it has a couple of interesting use cases.
 * A safe method of transmitting and executing arbitrary server-side code in a sand-boxed environment.
-* The syntax is essentially an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree), making it an ideal target data format for creating new languages and parsers
+* BASON's data format is an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree), making it an ideal target interpreter for creating new languages and parsers.
 
 # Installation
 ~~~
