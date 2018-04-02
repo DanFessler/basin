@@ -11,29 +11,31 @@ A lightweight interpreter for a JSON scripting language built in javascript.
 # Examples
 
 #### Hello World:
-~~~javascript
-[{ PRINT: 'Hello World!' }]
+~~~json
+[
+  { "PRINT": "Hello World!" }
+]
 ~~~
 Each program is an array of expressions, and therefore wrapped in square brackets. This script only has one expression, an object whos key is the name of the command, in this case `PRINT`, and we supply it with a string literal which results in the text "Hello World!" printing to the console.
 
 #### Using Variables:
-~~~javascript
+~~~json
 [
-  { LET: ['myvar', 'World!'] },
-  { PRINT: { ADD: [ "Hello ", {myvar: null} ] } }
+  { "LET": ["myvar", "World!"] },
+  { "PRINT": { "ADD": [ "Hello ", {"myvar": null} ] } }
 ]
 ~~~
 In this example we define a variable with the `LET` command.  `LET` takes two parameters, the name of the variable and its value.  We then use the `ADD` function to join the text "Hello " with the value of `myvar` to get "Hello World!" and print the result to the console with `PRINT`. In BASON Script, Variables are referenced as objects with a `null` value.
 
 #### Using Loops:
-~~~javascript
+~~~json
 [
-  { LET: ['i', 0] },
+  { "LET": ["i", 0] },
   {
-    REPEAT: 10,
-    script: [
-      { SET: ['i', { ADD: [ {i: null}, 1 ] }] },
-      { PRINT: {i: null} },
+    "REPEAT": 10,
+    "script": [
+      { "SET": ["i", { "ADD": [ {"i": null}, 1 ] }] },
+      { "PRINT": {"i": null} },
     ]
   }
 ]
@@ -41,15 +43,15 @@ In this example we define a variable with the `LET` command.  `LET` takes two pa
 This program prints the numbers 1 to 10 to the console using the `REPEAT` command. Any command which executes a script such as loops takes a special object property called "script" who's value is a `script` array.
 
 #### Functions:
-~~~javascript
+~~~json
 [
   {
-    FUNCTION: ['GREET', 'name'],
-    script: [
-      { PRINT: { ADD: ['Hello ', {name: null}] } }
+    "FUNCTION": ["GREET", "name"],
+    "script": [
+      { "PRINT": { "ADD": ["Hello ", {"name": null}] } }
     ]
   },
-  { GREET: 'Dan' }
+  { "GREET": "Dan" }
 ]
 ~~~
 Here we define a new function called `GREET` with an input parameter called `name`.  Once it has been defined, we can use it the same as any other command.  Presently, functions are not [hoisted](https://developer.mozilla.org/en-US/docs/Glossary/Hoisting), so you must declare a function before it is used in a script.
@@ -74,8 +76,8 @@ Import the package, define your program, and run it with `BASON.RUN()`
 let BASON = require('bason-script')
 
 let program = [
-  { LET: ["myvar", "World!"] },
-  { PRINT: { ADD: [ "Hello ", {myvar: null} ] } }
+  { "LET": ["myvar", "World!"] },
+  { "PRINT": { "ADD": [ "Hello ", {"myvar": null} ] } }
 ]
 
 BASON.RUN(program);

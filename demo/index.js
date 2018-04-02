@@ -1,8 +1,13 @@
 var interpreter = require('../src/interpreter')
 
 let program = [
-  { LET: ["myvar", "World!"] },
-  { PRINT: { ADD: [ "Hello ", {myvar: null} ] } }
+  {
+    "FUNCTION": ["GREET", "name"],
+    "script": [
+      { "PRINT": { "ADD": ["Hello ", {"name": null}] } }
+    ]
+  },
+  { "GREET": "World!" }
 ]
 
 interpreter.RUN(program);
