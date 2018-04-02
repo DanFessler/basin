@@ -56,7 +56,7 @@ Here we define a new function called `GREET` with an input parameter called `nam
 Functions are locally scoped, so any variables or functions declared in them will not be accessible outside and will [shadow](https://en.wikipedia.org/wiki/Variable_shadowing) anything of the same name in the outer scope.
 
 # Language
-* [Full BISON language reference](language.md)
+* [Full BASON language reference](language.md)
 
 # But why?
 BASON Script's syntax is obviously painful to write, so why would you want to use it?  Well it has a couple of interesting use cases.

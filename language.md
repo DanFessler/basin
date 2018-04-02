@@ -1,5 +1,5 @@
-# BISON Language reference
-BISON is a work in progress and the core language is still being developed.
+# BASON Language reference
+BASON is a work in progress and the core language is still being developed.
 
 ### Assignment operators
 * `SET: [var, value]` Assign value to variable
