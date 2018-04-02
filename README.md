@@ -67,7 +67,7 @@ BASON Script's syntax is obviously painful to write, so why would you want to us
 
 # Installation
 ~~~
-npm install bason-script --save
+npm install bason --save
 ~~~
 
 # Usage
