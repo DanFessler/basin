@@ -50,6 +50,9 @@ interpreter = {
     // if expression is literal, return itself as the value
     if (!expression || typeof expression != "object") return expression;
 
+    // Get the line number of the expression
+    var lineNumber = expression.line ? expression.line : line;
+
     // if expression is a script, run it
     if (Array.isArray(expression)) return this.RUN(expression.slice(), init);
 
@@ -57,15 +60,13 @@ interpreter = {
 
     // Get keyword and parameters. Evaluate params and ensure it is an array
     var keyword = Object.keys(expression)[0];
-    var params = this.EVAL(expression[keyword], null, line);
+    var params = this.EVAL(expression[keyword], null, lineNumber);
     params = Array.isArray(params) ? params : [params];
 
     // if a script exists for this expression, add it to params (without evaluating)
     if ("script" in expression) {
       params.push(expression.script);
     }
-
-    var lineNumber = expression.line ? expression.line : line;
 
     // Execute keyword from the stack with the computed params
     var match = this.FIND(keyword, lineNumber);
