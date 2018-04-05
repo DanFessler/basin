@@ -1,6 +1,6 @@
 {
   "name": "bason",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Javascript interpreter for a JSON scripting language",
   "main": "src/interpreter.js",
   "scripts": {
