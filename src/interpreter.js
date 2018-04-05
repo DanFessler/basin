@@ -16,7 +16,7 @@ interpreter = {
 
     // iterate over the script
     for (var i = 0; i < script.length; i++) {
-      script[i] = this.EVAL(script[i]);
+      script[i] = this.EVAL(script[i], null, i+1);
     }
 
     // pop the memory stack back to where it was
@@ -38,14 +38,14 @@ interpreter = {
 
     // if no match was found, log an error
     console.error(
-      "KEY NOT FOUND: " + keyword +
-      " on line: " + lineNumber
+      "KEY NOT FOUND: '" + keyword +
+      "' on line: " + lineNumber
     );
 
     return null;
   },
 
-  EVAL: function(expression, init) {
+  EVAL: function(expression, init, line) {
 
     // if expression is literal, return itself as the value
     if (!expression || typeof expression != "object") return expression;
@@ -57,7 +57,7 @@ interpreter = {
 
     // Get keyword and parameters. Evaluate params and ensure it is an array
     var keyword = Object.keys(expression)[0];
-    var params = this.EVAL(expression[keyword]);
+    var params = this.EVAL(expression[keyword], null, line);
     params = Array.isArray(params) ? params : [params];
 
     // if a script exists for this expression, add it to params (without evaluating)
@@ -65,7 +65,7 @@ interpreter = {
       params.push(expression.script);
     }
 
-    var lineNumber = expression.line ? expression.line : null;
+    var lineNumber = expression.line ? expression.line : line;
 
     // Execute keyword from the stack with the computed params
     var match = this.FIND(keyword, lineNumber);
