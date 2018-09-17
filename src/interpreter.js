@@ -209,6 +209,16 @@ interpreter = {
           this.EVAL(script);
         }
       }
+    },
+    {
+      IF: function(condition, script, elseBody) {
+        // console.log(condition, script, elseBody);
+        if (this.EVAL(condition)) {
+          this.EVAL(script);
+        } else {
+          if (elseBody) this.EVAL(elseBody);
+        }
+      }
     }
   ]
 };
