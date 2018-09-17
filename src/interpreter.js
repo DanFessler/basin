@@ -24,7 +24,7 @@ interpreter = {
     return script;
   },
 
-  FIND: function(keyword, lineNumber) {
+  FIND: function(keyword, lineNumber, showError) {
     // iterate through all the keywords in the stack
     // starting from the end until we find a match
     for (var i = this.Stack.length - 1; i >= 0; i--) {
@@ -34,7 +34,8 @@ interpreter = {
     }
 
     // if no match was found, log an error
-    console.error("KEY NOT FOUND: '" + keyword + "' on line: " + lineNumber);
+    if (showError)
+      console.error("KEY NOT FOUND: '" + keyword + "' on line: " + lineNumber);
 
     return null;
   },
@@ -62,7 +63,7 @@ interpreter = {
     }
 
     // Execute keyword from the stack with the computed params
-    var match = this.FIND(keyword, lineNumber);
+    var match = this.FIND(keyword, lineNumber, true);
     if (match)
       return typeof match[keyword] == "function"
         ? match[keyword].apply(this, params)
@@ -105,6 +106,13 @@ interpreter = {
     {
       SET: function(key, value) {
         var variable = this.FIND(key);
+
+        // if no variable was found in the stack, define one
+        if (variable == null) {
+          this.Stack.push({ [key]: value });
+          variable = this.FIND(key);
+        }
+
         variable[key] = value;
       }
     },
