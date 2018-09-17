@@ -211,12 +211,11 @@ interpreter = {
       }
     },
     {
-      IF: function(condition, script, elseBody) {
-        // console.log(condition, script, elseBody);
+      IF: function(condition, script) {
         if (this.EVAL(condition)) {
-          this.EVAL(script);
+          this.EVAL(script[0]);
         } else {
-          if (elseBody) this.EVAL(elseBody);
+          if (script[1]) this.EVAL(script[1]);
         }
       }
     }
