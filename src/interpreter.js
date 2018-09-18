@@ -221,7 +221,7 @@ interpreter = {
     },
     {
       IF: function(condition, script) {
-        if (this.EVAL(condition)) {
+        if (condition) {
           this.EVAL(script[0]);
         } else {
           if (script[1]) this.EVAL(script[1]);
