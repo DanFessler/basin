@@ -211,11 +211,27 @@ interpreter = {
       }
     },
     {
+      FOR: function(key, start, end, step, script) {
+        variable = { [key]: start };
+        this.Stack.push(variable);
+        for (null; variable[key] <= end; variable[key] += step ? step : 1) {
+          this.EVAL(script);
+        }
+      }
+    },
+    {
       IF: function(condition, script) {
         if (this.EVAL(condition)) {
           this.EVAL(script[0]);
         } else {
           if (script[1]) this.EVAL(script[1]);
+        }
+      }
+    },
+    {
+      WHILE: function(condition, script) {
+        while (this.EVAL(script[0][0])) {
+          this.EVAL(script[1]);
         }
       }
     }
