@@ -82,8 +82,6 @@ interpreter = {
 
     {
       FUNCTION: function(key) {
-        //console.log(arguments[2]);
-
         var args = Array.prototype.slice.call(arguments);
         var params = args.slice(1, args.length - 1);
         var script = args[args.length - 1];
@@ -93,8 +91,10 @@ interpreter = {
           this.EVAL(
             script,
             function(key, value) {
-              this.FIND("LET")["LET"].bind(this)(key, value);
-            }.bind(this, args[1], arguments[0])
+              for (let i = 0; i < key.length; i++) {
+                this.FIND("LET")["LET"].bind(this)(key[i], value[i]);
+              }
+            }.bind(this, params, [...arguments])
           );
         };
 
