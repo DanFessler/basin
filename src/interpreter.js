@@ -82,8 +82,6 @@ interpreter = {
 
     {
       FUNCTION: function(key) {
-        //console.log(arguments[2]);
-
         var args = Array.prototype.slice.call(arguments);
         var params = args.slice(1, args.length - 1);
         var script = args[args.length - 1];
@@ -220,11 +218,27 @@ interpreter = {
       }
     },
     {
+      FOR: function(key, start, end, step, script) {
+        variable = { [key]: start };
+        this.Stack.push(variable);
+        for (null; variable[key] <= end; variable[key] += step ? step : 1) {
+          this.EVAL(script);
+        }
+      }
+    },
+    {
       IF: function(condition, script) {
-        if (this.EVAL(condition)) {
+        if (condition) {
           this.EVAL(script[0]);
         } else {
           if (script[1]) this.EVAL(script[1]);
+        }
+      }
+    },
+    {
+      WHILE: function(condition, script) {
+        while (this.EVAL(script[0][0])) {
+          this.EVAL(script[1]);
         }
       }
     }

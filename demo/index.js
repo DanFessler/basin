@@ -2,19 +2,24 @@ var interpreter = require("../src/interpreter");
 
 let program = [
   {
-    FUNCTION: ["FUNC", "name"],
-    script: [
-      {
-        IF: { "==": [{ name: null }, "Dan"] },
-        script: [{ RETURN: "You found Dan!" }]
-      },
-      {
-        IF: { "<>": [{ name: null }, "Dan"] },
-        script: [{ RETURN: "You didn't find Dan!" }]
-      }
-    ]
+    FUNCTION: ["GREET", "name"],
+    script: [{ PRINT: { ADD: ["Hello ", { name: null }] } }]
   },
-  { PRINT: { FUNC: "Dan" } }
+  { GREET: "World!" },
+
+  {
+    FOR: ["i", 1, 10, 1],
+    script: [{ PRINT: { i: null } }]
+  }
+
+  { SET: ["i", 0] },
+  {
+    WHILE: null,
+    script: [
+      [{ "<": [{ i: null }, 20] }],
+      [{ PRINT: { i: null } }, { SET: ["i", { ADD: [{ i: null }, 1] }] }]
+    ]
+  }
 ];
 
 interpreter.RUN(program);
