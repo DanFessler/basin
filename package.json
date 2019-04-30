@@ -1,6 +1,6 @@
 {
   "name": "bason",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A Javascript interpreter for a JSON scripting language",
   "main": "src/interpreter.js",
   "scripts": {
@@ -13,11 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/DanFessler/bason-script.git"
   },
-  "keywords": [
-    "javascript",
-    "interpreter",
-    "ast"
-  ],
+  "keywords": ["javascript", "interpreter", "ast"],
   "bugs": {
     "url": "https://github.com/DanFessler/bason-script/issues"
   },
