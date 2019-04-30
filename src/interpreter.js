@@ -90,15 +90,24 @@ interpreter = {
 
         var obj = {};
         obj[key] = function() {
-          this.EVAL(
-            script,
-            function(key, value) {
-              this.FIND("LET")["LET"].bind(this)(key, value);
-            }.bind(this, args[1], arguments[0])
-          );
+          try {
+            this.EVAL(
+              script,
+              function(key, value) {
+                this.FIND("LET")["LET"].bind(this)(key, value);
+              }.bind(this, args[1], arguments[0])
+            );
+          } catch (value) {
+            return value;
+          }
         };
 
         this.Stack.push(obj);
+      }
+    },
+    {
+      RETURN: function(value) {
+        throw value;
       }
     },
 
