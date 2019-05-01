@@ -31,10 +31,23 @@ BASON is a work in progress and the core language is still being developed.
 
 ### Statements
 
-- `{ "LET": [name, value] }` Declares a variable
-- `{ "PRINT": string }` Prints a string to the console
-- `{ "IF": condition, script: [script...] }` Executes a block of statements if condition is met
-- `{ "FOR": [variable, start, end, step], script: [script...] }` Loops over a block of statements a specified number of times
-- `{ "WHILE": condition, script: [script...] }` Loops over a block of statements while condition is true
-- `{ "FUNCTION": [name, params...], script: [script...] }` Declares a function
-- `{ "RETURN": value }` Returns a value from a function and exits
+- `{ "LET": [name, value] }`  
+  Declares a variable
+
+- `{ "PRINT": string }`  
+  Prints a string to the console
+
+- `{ "IF": condition, script: [script...] }`  
+  Executes a block of statements if condition is met
+
+* `{ "FOR": [variable, start, end, step], script: [script...] }`  
+  Loops over a block of statements a specified number of times
+
+- `{ "WHILE": condition, script: [script...] }`  
+  Loops over a block of statements while condition is true
+
+* `{ "FUNCTION": [name, params...], script: [script...] }`  
+  Declares a function
+
+- `{ "RETURN": value }`  
+  Returns a value from a function and exits
