@@ -10,7 +10,7 @@ let program = [
   {
     FOR: ["i", 1, 10, 1],
     script: [{ PRINT: { i: null } }]
-  }
+  },
 
   { SET: ["i", 0] },
   {
