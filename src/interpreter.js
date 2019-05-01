@@ -4,7 +4,7 @@
 // if expression is a literal, no need for the object
 
 interpreter = {
-  RUN: function(script, init) {
+  run: function(script, init) {
     // Mark where the new memory stack begins
     var stackindex = this.Stack.length;
 
@@ -48,7 +48,7 @@ interpreter = {
     var lineNumber = expression.line ? expression.line : line;
 
     // if expression is a script, run it
-    if (Array.isArray(expression)) return this.RUN(expression.slice(), init);
+    if (Array.isArray(expression)) return this.run(expression.slice(), init);
 
     // Otherwise...
 

@@ -22,4 +22,4 @@ let program = [
   }
 ];
 
-interpreter.RUN(program);
+interpreter.run(program);
