@@ -24,6 +24,12 @@ interpreter = {
     return script;
   },
 
+  import: function(plugin) {
+    Object.keys(plugin).forEach(key => {
+      this.Stack.push({ [key]: plugin[key] });
+    });
+  },
+
   FIND: function(keyword, lineNumber, showError) {
     // iterate through all the keywords in the stack
     // starting from the end until we find a match
