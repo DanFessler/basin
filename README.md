@@ -81,7 +81,7 @@ BASON's syntax is obviously painful to write, so why would you want to use it? W
 # Installation
 
 ```
-npm install bason --save
+npm install basin-script --save
 ```
 
 # Usage
