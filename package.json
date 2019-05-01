@@ -1,6 +1,6 @@
 {
-  "name": "bason",
-  "version": "1.0.4",
+  "name": "basin-script",
+  "version": "1.0.5",
   "description": "A Javascript interpreter for a JSON scripting language",
   "main": "src/interpreter.js",
   "scripts": {
@@ -11,11 +11,15 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DanFessler/bason-script.git"
+    "url": "git+https://github.com/DanFessler/basin.git"
   },
-  "keywords": ["javascript", "interpreter", "ast"],
+  "keywords": [
+    "javascript",
+    "interpreter",
+    "ast"
+  ],
   "bugs": {
-    "url": "https://github.com/DanFessler/bason-script/issues"
+    "url": "https://github.com/DanFessler/basin/issues"
   },
-  "homepage": "https://github.com/DanFessler/bason-script#readme"
+  "homepage": "https://github.com/DanFessler/basin#readme"
 }

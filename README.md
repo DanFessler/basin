@@ -89,7 +89,7 @@ npm install bason --save
 Import the package, define your program, and run it with `Basin.run()`
 
 ```javascript
-let Basin = require("basin");
+let Basin = require("basin-script");
 
 let program = [
   { LET: ["myvar", "World!"] },

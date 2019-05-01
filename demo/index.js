@@ -1,4 +1,4 @@
-var interpreter = require("../src/interpreter");
+var basin = require("../src/interpreter");
 
 let program = [
   {
@@ -22,4 +22,4 @@ let program = [
   }
 ];
 
-interpreter.run(program);
+basin.run(program);
