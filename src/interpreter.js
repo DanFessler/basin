@@ -213,13 +213,6 @@ interpreter = {
       }
     },
     {
-      REPEAT: function(count, script) {
-        for (var i = 0; i < count; i++) {
-          this.EVAL(script);
-        }
-      }
-    },
-    {
       FOR: function(key, start, end, step, script) {
         variable = { [key]: start };
         this.Stack.push(variable);
