@@ -14,7 +14,7 @@ interpreter = {
 
     // iterate over the script
     for (var i = 0; i < script.length; i++) {
-      script[i] = this.EVAL(script[i], null, i + 1);
+      script[i] = this.EVAL(script[i], null, null, i + 1);
     }
 
     // pop the memory stack back to where it was
@@ -46,7 +46,7 @@ interpreter = {
     return null;
   },
 
-  EVAL: function(expression, init, line) {
+  EVAL: function(expression, init, stack, line) {
     // if expression is literal, return itself as the value
     if (!expression || typeof expression != "object") return expression;
 
@@ -54,13 +54,23 @@ interpreter = {
     var lineNumber = expression.line ? expression.line : line;
 
     // if expression is a script, run it
-    if (Array.isArray(expression)) return this.run(expression.slice(), init);
+    if (Array.isArray(expression)) {
+      let interpreter = this;
+
+      // if we were provided a stack, lets use that instead
+      if (stack) {
+        interpreter = Object.assign({}, this);
+        interpreter.Stack = stack;
+      }
+
+      return interpreter.run(expression.slice(), init);
+    }
 
     // Otherwise...
 
     // Get keyword and parameters. Evaluate params and ensure it is an array
     var keyword = Object.keys(expression)[0];
-    var params = this.EVAL(expression[keyword], null, lineNumber);
+    var params = this.EVAL(expression[keyword], null, null, lineNumber);
     params = Array.isArray(params) ? params : [params];
 
     // if a script exists for this expression, add it to params (without evaluating)
@@ -241,6 +251,18 @@ interpreter = {
         while (this.EVAL(script[0][0])) {
           this.EVAL(script[1]);
         }
+      }
+    },
+    {
+      UPDATE: function(condition, script) {
+        let newStack = this.Stack.map(obj => {
+          return Object.assign({}, obj);
+        });
+        let updateFunction = () => {
+          this.EVAL(script, null, newStack);
+          window.requestAnimationFrame(updateFunction);
+        };
+        window.requestAnimationFrame(updateFunction);
       }
     }
   ]
