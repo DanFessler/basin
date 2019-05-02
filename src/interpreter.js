@@ -220,7 +220,7 @@ interpreter = {
     },
     {
       FOR: function(key, start, end, step, script) {
-        variable = { [key]: start };
+        let variable = { [key]: start };
         this.Stack.push(variable);
         for (null; variable[key] <= end; variable[key] += step ? step : 1) {
           this.EVAL(script);
