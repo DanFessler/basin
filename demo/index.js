@@ -24,7 +24,7 @@ let program = [
         script: [{ PRINT: { ADD: [{ ADD: [{ x: null }, ","] }, { y: null }] } }]
       }
     ]
-  }
+  },
 
   // While loop
   { SET: ["i", 0] },
