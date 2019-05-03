@@ -15,11 +15,16 @@ let program = [
   },
   { GREET: "World!" },
 
-  // For loop
+  // Nested for loop
   {
-    FOR: ["i", 1, 10, 1],
-    script: [{ PRINT: { i: null } }]
-  },
+    FOR: ["y", 1, 3, 1],
+    script: [
+      {
+        FOR: ["x", 1, 3, 1],
+        script: [{ PRINT: { ADD: [{ ADD: [{ x: null }, ","] }, { y: null }] } }]
+      }
+    ]
+  }
 
   // While loop
   { SET: ["i", 0] },
