@@ -4,33 +4,47 @@
 // if expression is a literal, no need for the object
 
 let update = true;
+let end = false;
 
 interpreter = {
-  run: function(script, delay, Gen) {
-    if (!Gen) {
-      Gen = this.SCRIPT(script);
+  run: function(script, delay, run) {
+    if (!this.Gen) {
+      this.Gen = this.SCRIPT(script);
       console.log("RUN");
       this.startTime = Date.now();
     }
 
-    let result = Gen.next();
+    if (run) end = false;
+
+    let result;
+    if (end) {
+      this.Gen = null;
+      return "done";
+    } else {
+      result = this.Gen.next();
+    }
+
     // console.log(JSON.stringify(result));
     if (!result.done) {
       if (delay) {
         // console.log("DELAY", result.value);
-        setTimeout(this.run.bind(this, script, delay, Gen), delay);
+        setTimeout(this.run.bind(this, script, delay), delay);
       } else {
         if (!typeof window) {
           // console.log("ANIMATION");
-          window.requestAnimationFrame(this.run.bind(this, script, null, Gen));
+          window.requestAnimationFrame(this.run.bind(this, script));
         } else {
           // console.log("IMMEDIATE");
-          setImmediate(this.run.bind(this, script, null, Gen));
+          setImmediate(this.run.bind(this, script));
         }
       }
     } else {
       console.log("done");
     }
+  },
+
+  stop: function() {
+    end = true;
   },
 
   runCommand: function*(command) {
