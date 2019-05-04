@@ -10,6 +10,7 @@ interpreter = {
     if (!Gen) {
       Gen = this.SCRIPT(script);
       console.log("RUN");
+      this.startTime = Date.now();
     }
 
     let result = Gen.next();
@@ -42,6 +43,13 @@ interpreter = {
     }
 
     return result;
+  },
+
+  update: function*(update) {
+    if (update || Date.now() - this.startTime > 1000) {
+      this.startTime = Date.now();
+      yield;
+    }
   },
 
   SCRIPT: function*(script, init) {
@@ -260,11 +268,14 @@ interpreter = {
     },
     {
       FOR: function*(key, start, end, step, script) {
+        let startTime = Date.now();
         let variable = { [key]: start };
         this.Stack.push(variable);
         for (null; variable[key] <= end; variable[key] += step ? step : 1) {
           yield* this.EVAL(script);
-          if (update) yield;
+
+          // ensure we never get caught in an infinite loop
+          yield* this.update(update);
         }
       }
     },
@@ -279,9 +290,12 @@ interpreter = {
     },
     {
       WHILE: function*(condition, script) {
+        let startTime = Date.now();
         while (yield* this.EVAL(script[0][0])) {
           yield* this.EVAL(script[1]);
-          if (update) yield;
+
+          // ensure we never get caught in an infinite loop
+          yield* this.update(update);
         }
       }
     },
@@ -292,13 +306,14 @@ interpreter = {
       }
     },
     {
-      RESUMEUPDATE: function() {
+      RESUMEUPDATE: function*() {
         update = true;
+        yield* this.update(true);
       }
     },
     {
       UPDATE: function*() {
-        yield;
+        yield* this.update(true);
       }
     }
   ]
