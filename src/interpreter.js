@@ -3,8 +3,48 @@
 // if only one expression, no need for the array
 // if expression is a literal, no need for the object
 
+let update = true;
+
 interpreter = {
-  run: function(script, init) {
+  run: function(script, delay, Gen) {
+    if (!Gen) {
+      Gen = this.SCRIPT(script);
+      console.log("RUN");
+    }
+
+    let result = Gen.next();
+    // console.log(JSON.stringify(result));
+    if (!result.done) {
+      if (delay) {
+        // console.log("DELAY", result.value);
+        setTimeout(this.run.bind(this, script, delay, Gen), delay);
+      } else {
+        if (!typeof window) {
+          // console.log("ANIMATION");
+          window.requestAnimationFrame(this.run.bind(this, script, null, Gen));
+        } else {
+          // console.log("IMMEDIATE");
+          setImmediate(this.run.bind(this, script, null, Gen));
+        }
+      }
+    } else {
+      console.log("done");
+    }
+  },
+
+  runCommand: function*(command) {
+    // Attempt to run the function
+    let result = command();
+
+    // if we got back a generator, run it
+    if (result && result.next) {
+      result = yield* command();
+    }
+
+    return result;
+  },
+
+  SCRIPT: function*(script, init) {
     // Mark where the new memory stack begins
     var stackindex = this.Stack.length;
 
@@ -14,7 +54,7 @@ interpreter = {
 
     // iterate over the script
     for (var i = 0; i < script.length; i++) {
-      script[i] = this.EVAL(script[i], null, null, i + 1);
+      script[i] = yield* this.EVAL(script[i]);
     }
 
     // pop the memory stack back to where it was
@@ -30,7 +70,7 @@ interpreter = {
     });
   },
 
-  FIND: function(keyword, lineNumber, showError) {
+  FIND: function(keyword, showError) {
     // iterate through all the keywords in the stack
     // starting from the end until we find a match
     for (var i = this.Stack.length - 1; i >= 0; i--) {
@@ -40,37 +80,25 @@ interpreter = {
     }
 
     // if no match was found, log an error
-    if (showError)
-      console.error("KEY NOT FOUND: '" + keyword + "' on line: " + lineNumber);
+    if (showError) console.error(`KEY NOT FOUND: '${keyword}'`);
 
     return null;
   },
 
-  EVAL: function(expression, init, stack, line) {
+  EVAL: function*(expression, init) {
     // if expression is literal, return itself as the value
     if (!expression || typeof expression != "object") return expression;
 
-    // Get the line number of the expression
-    var lineNumber = expression.line ? expression.line : line;
-
     // if expression is a script, run it
     if (Array.isArray(expression)) {
-      let interpreter = this;
-
-      // if we were provided a stack, lets use that instead
-      if (stack) {
-        interpreter = Object.assign({}, this);
-        interpreter.Stack = stack;
-      }
-
-      return interpreter.run(expression.slice(), init);
+      return yield* this.SCRIPT(expression.slice(), init);
     }
 
     // Otherwise...
 
     // Get keyword and parameters. Evaluate params and ensure it is an array
     var keyword = Object.keys(expression)[0];
-    var params = this.EVAL(expression[keyword], null, null, lineNumber);
+    var params = yield* this.EVAL(expression[keyword]);
     params = Array.isArray(params) ? params : [params];
 
     // if a script exists for this expression, add it to params (without evaluating)
@@ -79,12 +107,14 @@ interpreter = {
     }
 
     // Execute keyword from the stack with the computed params
-    var match = this.FIND(keyword, lineNumber, true);
-    if (match)
+    var match = this.FIND(keyword, true);
+    if (match) {
       return typeof match[keyword] == "function"
-        ? match[keyword].apply(this, params)
+        ? yield* this.runCommand(match[keyword].bind(this, ...params))
         : match[keyword];
-    else return keyword;
+    }
+
+    return;
   },
 
   Stack: [
@@ -103,9 +133,9 @@ interpreter = {
         var script = args[args.length - 1];
 
         var obj = {};
-        obj[key] = function() {
+        obj[key] = function*() {
           try {
-            this.EVAL(
+            yield* this.EVAL(
               script,
               function(key, value) {
                 for (let i = 0; i < key.length; i++) {
@@ -229,40 +259,41 @@ interpreter = {
       }
     },
     {
-      FOR: function(key, start, end, step, script) {
+      FOR: function*(key, start, end, step, script) {
         let variable = { [key]: start };
         this.Stack.push(variable);
         for (null; variable[key] <= end; variable[key] += step ? step : 1) {
-          this.EVAL(script);
+          yield* this.EVAL(script);
+          if (update) yield;
         }
       }
     },
     {
-      IF: function(condition, script) {
+      IF: function*(condition, script) {
         if (condition) {
-          this.EVAL(script[0]);
+          yield* this.EVAL(script[0]);
         } else {
-          if (script[1]) this.EVAL(script[1]);
+          if (script[1]) yield* this.EVAL(script[1]);
         }
       }
     },
     {
-      WHILE: function(condition, script) {
-        while (this.EVAL(script[0][0])) {
-          this.EVAL(script[1]);
+      WHILE: function*(condition, script) {
+        while (yield* this.EVAL(script[0][0])) {
+          yield* this.EVAL(script[1]);
+          if (update) yield;
         }
       }
     },
+
     {
-      UPDATE: function(condition, script) {
-        let newStack = this.Stack.map(obj => {
-          return Object.assign({}, obj);
-        });
-        let updateFunction = () => {
-          this.EVAL(script, null, newStack);
-          window.requestAnimationFrame(updateFunction);
-        };
-        window.requestAnimationFrame(updateFunction);
+      SUSPENDUPDATE: function() {
+        update = false;
+      }
+    },
+    {
+      RESUMEUPDATE: function() {
+        update = true;
       }
     }
   ]
