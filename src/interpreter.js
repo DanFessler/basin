@@ -295,6 +295,11 @@ interpreter = {
       RESUMEUPDATE: function() {
         update = true;
       }
+    },
+    {
+      UPDATE: function*() {
+        yield;
+      }
     }
   ]
 };
