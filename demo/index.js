@@ -1,4 +1,4 @@
-var basin = require("../src/interpreter");
+const basin = require("../src/interpreter");
 
 // Load in custom functions plugin
 basin.import({
@@ -42,4 +42,4 @@ let program = [
   }
 ];
 
-basin.run(program);
+basin.start(program);

@@ -3,51 +3,63 @@
 // if only one expression, no need for the array
 // if expression is a literal, no need for the object
 
-let update = true;
-let end = false;
+let core = require("./core.js");
 
-interpreter = {
-  run: function(script, delay, run) {
-    if (!this.Gen) {
-      this.Gen = this.SCRIPT(script);
-      console.log("RUN");
-      this.startTime = Date.now();
-    }
+class Basin {
+  constructor() {
+    this.Stack = [];
+    this.shouldUpdate = true;
+    this.import(core, this);
+  }
 
-    if (run) end = false;
+  import(plugin, newThis) {
+    Object.keys(plugin).forEach(key => {
+      this.Stack.push({
+        [key]: newThis ? plugin[key].bind(newThis) : plugin[key]
+      });
+    });
+  }
 
-    let result;
-    if (end) {
-      this.Gen = null;
-      return "done";
-    } else {
-      result = this.Gen.next();
-    }
+  start(script, delay) {
+    console.log("START");
+    this.startTime = Date.now();
+    this.Gen = this.runScript(script);
+    this.run(delay);
+  }
 
-    // console.log(JSON.stringify(result));
+  run(delay) {
+    if (!this.Gen) return;
+
+    let result = this.Gen.next();
+
     if (!result.done) {
       if (delay) {
-        // console.log("DELAY", result.value);
         setTimeout(this.run.bind(this, script, delay), delay);
       } else {
         if (!typeof window) {
-          // console.log("ANIMATION");
           window.requestAnimationFrame(this.run.bind(this, script));
         } else {
-          // console.log("IMMEDIATE");
-          setImmediate(this.run.bind(this, script));
+          setImmediate(this.run.bind(this));
         }
       }
     } else {
       console.log("done");
     }
-  },
+  }
 
-  stop: function() {
-    end = true;
-  },
+  stop() {
+    console.log("STOP");
+    this.Gen = null;
+  }
 
-  runCommand: function*(command) {
+  *update(update) {
+    if (update || Date.now() - this.startTime > 1000) {
+      this.startTime = Date.now();
+      yield;
+    }
+  }
+
+  *runCommand(command) {
     // Attempt to run the function
     let result = command();
 
@@ -57,16 +69,9 @@ interpreter = {
     }
 
     return result;
-  },
+  }
 
-  update: function*(update) {
-    if (update || Date.now() - this.startTime > 1000) {
-      this.startTime = Date.now();
-      yield;
-    }
-  },
-
-  SCRIPT: function*(script, init) {
+  *runScript(script, init) {
     // Mark where the new memory stack begins
     var stackindex = this.Stack.length;
 
@@ -76,7 +81,7 @@ interpreter = {
 
     // iterate over the script
     for (var i = 0; i < script.length; i++) {
-      script[i] = yield* this.EVAL(script[i]);
+      script[i] = yield* this.evaluate(script[i]);
     }
 
     // pop the memory stack back to where it was
@@ -84,15 +89,9 @@ interpreter = {
 
     // return an array of evaluated expressions
     return script;
-  },
+  }
 
-  import: function(plugin) {
-    Object.keys(plugin).forEach(key => {
-      this.Stack.push({ [key]: plugin[key] });
-    });
-  },
-
-  FIND: function(keyword, showError) {
+  find(keyword, showError) {
     // iterate through all the keywords in the stack
     // starting from the end until we find a match
     for (var i = this.Stack.length - 1; i >= 0; i--) {
@@ -105,22 +104,22 @@ interpreter = {
     if (showError) console.error(`KEY NOT FOUND: '${keyword}'`);
 
     return null;
-  },
+  }
 
-  EVAL: function*(expression, init) {
+  *evaluate(expression, init) {
     // if expression is literal, return itself as the value
     if (!expression || typeof expression != "object") return expression;
 
     // if expression is a script, run it
     if (Array.isArray(expression)) {
-      return yield* this.SCRIPT(expression.slice(), init);
+      return yield* this.runScript(expression.slice(), init);
     }
 
     // Otherwise...
 
     // Get keyword and parameters. Evaluate params and ensure it is an array
     var keyword = Object.keys(expression)[0];
-    var params = yield* this.EVAL(expression[keyword]);
+    var params = yield* this.evaluate(expression[keyword]);
     params = Array.isArray(params) ? params : [params];
 
     // if a script exists for this expression, add it to params (without evaluating)
@@ -129,7 +128,7 @@ interpreter = {
     }
 
     // Execute keyword from the stack with the computed params
-    var match = this.FIND(keyword, true);
+    var match = this.find(keyword, true);
     if (match) {
       return typeof match[keyword] == "function"
         ? yield* this.runCommand(match[keyword].bind(this, ...params))
@@ -137,200 +136,7 @@ interpreter = {
     }
 
     return;
-  },
+  }
+}
 
-  Stack: [
-    {
-      LET: function(key, value) {
-        var obj = {};
-        obj[key] = value;
-        this.Stack.push(obj);
-      }
-    },
-
-    {
-      FUNCTION: function(key) {
-        var args = Array.prototype.slice.call(arguments);
-        var params = args.slice(1, args.length - 1);
-        var script = args[args.length - 1];
-
-        var obj = {};
-        obj[key] = function*() {
-          try {
-            yield* this.EVAL(
-              script,
-              function(key, value) {
-                for (let i = 0; i < key.length; i++) {
-                  this.FIND("LET")["LET"].bind(this)(key[i], value[i]);
-                }
-              }.bind(this, params, [...arguments])
-            );
-          } catch (value) {
-            return value;
-          }
-        };
-
-        this.Stack.push(obj);
-      }
-    },
-    {
-      RETURN: function(value) {
-        throw value;
-      }
-    },
-
-    // Assignment operators
-    {
-      SET: function(key, value) {
-        var variable = this.FIND(key);
-
-        // if no variable was found in the stack, define one
-        if (variable == null) {
-          this.Stack.push({ [key]: value });
-          variable = this.FIND(key);
-        }
-
-        variable[key] = value;
-      }
-    },
-    {
-      INC: function(key) {
-        var variable = this.FIND(key);
-        variable[key]++;
-      }
-    },
-
-    // Arithmetic operators
-    {
-      ADD: function(A, B) {
-        return A + B;
-      }
-    },
-    {
-      SUB: function(A, B) {
-        return A - B;
-      }
-    },
-    {
-      MUL: function(A, B) {
-        return A * B;
-      }
-    },
-    {
-      DIV: function(A, B) {
-        return A / B;
-      }
-    },
-    {
-      MOD: function(A, B) {
-        return A % B;
-      }
-    },
-
-    // Relational operators
-    {
-      "==": function(A, B) {
-        return A == B;
-      }
-    },
-    {
-      "<>": function(A, B) {
-        return A != B;
-      }
-    },
-    {
-      ">": function(A, B) {
-        return A > B;
-      }
-    },
-    {
-      "<": function(A, B) {
-        return A < B;
-      }
-    },
-    {
-      ">=": function(A, B) {
-        return A >= B;
-      }
-    },
-    {
-      "<=": function(A, B) {
-        return A <= B;
-      }
-    },
-
-    // Logical operators
-    {
-      AND: function(A, B) {
-        return A && B;
-      }
-    },
-    {
-      OR: function(A, B) {
-        return A || B;
-      }
-    },
-
-    {
-      PRINT: function() {
-        var string = "";
-        for (var i = 0; i < arguments.length; i++) {
-          string += arguments[i] != null ? arguments[i] : "";
-        }
-        console.log(string);
-      }
-    },
-    {
-      FOR: function*(key, start, end, step, script) {
-        let startTime = Date.now();
-        let variable = { [key]: start };
-        this.Stack.push(variable);
-        for (null; variable[key] <= end; variable[key] += step ? step : 1) {
-          yield* this.EVAL(script);
-
-          // ensure we never get caught in an infinite loop
-          yield* this.update(update);
-        }
-      }
-    },
-    {
-      IF: function*(condition, script) {
-        if (condition) {
-          yield* this.EVAL(script[0]);
-        } else {
-          if (script[1]) yield* this.EVAL(script[1]);
-        }
-      }
-    },
-    {
-      WHILE: function*(condition, script) {
-        let startTime = Date.now();
-        while (yield* this.EVAL(script[0][0])) {
-          yield* this.EVAL(script[1]);
-
-          // ensure we never get caught in an infinite loop
-          yield* this.update(update);
-        }
-      }
-    },
-
-    {
-      SUSPENDUPDATE: function() {
-        update = false;
-      }
-    },
-    {
-      RESUMEUPDATE: function*() {
-        update = true;
-        yield* this.update(true);
-      }
-    },
-    {
-      UPDATE: function*() {
-        yield* this.update(true);
-      }
-    }
-  ]
-};
-
-module.exports = interpreter;
+module.exports = new Basin();
