@@ -24,22 +24,25 @@ class Basin {
     console.log("START");
     this.startTime = Date.now();
     this.Gen = this.runScript(script);
-    this.run(delay);
+    this.run(this.Stack.slice(), delay);
   }
 
-  run(delay) {
-    if (!this.Gen) return;
+  run(startState, delay) {
+    if (!this.Gen) {
+      this.Stack = startState;
+      return;
+    }
 
     let result = this.Gen.next();
 
     if (!result.done) {
       if (delay) {
-        setTimeout(this.run.bind(this, script, delay), delay);
+        setTimeout(this.run.bind(this, startState, delay), delay);
       } else {
         if (!typeof window) {
-          window.requestAnimationFrame(this.run.bind(this, script));
+          window.requestAnimationFrame(this.run.bind(this, startState));
         } else {
-          setImmediate(this.run.bind(this));
+          setImmediate(this.run.bind(this, startState));
         }
       }
     } else {
