@@ -33,20 +33,26 @@ class Basin {
       return;
     }
 
-    let result = this.Gen.next();
-
-    if (!result.done) {
-      if (delay) {
-        setTimeout(this.run.bind(this, startState, delay), delay);
-      } else {
-        if (!typeof window) {
-          window.requestAnimationFrame(this.run.bind(this, startState));
+    try {
+      let result = this.Gen.next();
+      if (!result.done) {
+        if (delay) {
+          setTimeout(this.run.bind(this, startState, delay), delay);
         } else {
-          setImmediate(this.run.bind(this, startState));
+          if (!typeof window) {
+            window.requestAnimationFrame(this.run.bind(this, startState));
+          } else {
+            setImmediate(this.run.bind(this, startState));
+          }
         }
+      } else {
+        console.log("done");
       }
-    } else {
-      console.log("done");
+    } catch (e) {
+      if (e.status === "error") console.error("ERROR:", e.result);
+      else {
+        console.log(e);
+      }
     }
   }
 
@@ -84,7 +90,12 @@ class Basin {
 
     // iterate over the script
     for (var i = 0; i < script.length; i++) {
-      script[i] = yield* this.evaluate(script[i]);
+      try {
+        script[i] = yield* this.evaluate(script[i]);
+      } catch (e) {
+        // console.error(e);
+        throw e;
+      }
     }
 
     // pop the memory stack back to where it was
@@ -133,9 +144,23 @@ class Basin {
     // Execute keyword from the stack with the computed params
     var match = this.find(keyword, true);
     if (match) {
-      return typeof match[keyword] == "function"
-        ? yield* this.runCommand(match[keyword].bind(this, ...params))
-        : match[keyword];
+      if (typeof match[keyword] == "function") {
+        return yield* this.runCommand(match[keyword].bind(this, ...params));
+      } else if (Array.isArray(match[keyword])) {
+        // TODO:
+        // Array access needs to be multi-dimensional
+        let returnVal = match[keyword][params[0]];
+        if (returnVal) {
+          return returnVal;
+        } else {
+          throw {
+            status: "error",
+            result: "RUNTIME ERROR: Tried to access out of range index"
+          };
+        }
+      } else {
+        return match[keyword];
+      }
     }
 
     return;
