@@ -149,7 +149,7 @@ class Basin {
       } else if (Array.isArray(match[keyword])) {
         // TODO:
         // Array access needs to be multi-dimensional
-        let returnVal = match[keyword][params[0]];
+        let returnVal = getIndex(match[keyword], params.reverse());
         if (returnVal) {
           return returnVal;
         } else {
@@ -157,6 +157,13 @@ class Basin {
             status: "error",
             result: "RUNTIME ERROR: Tried to access out of range index"
           };
+        }
+        function getIndex(variable, index) {
+          if (index.length > 1) {
+            return getIndex(variable[index[0]], index.slice(1));
+          } else {
+            return variable[index[0]];
+          }
         }
       } else {
         return match[keyword];

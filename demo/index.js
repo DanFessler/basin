@@ -62,36 +62,43 @@ let program1 = [
 ];
 
 let program2 = [
-  { DIM2: ["myArray", 3, 3] },
-  // { DUMP: "myArray" }
-  // { TEST: "myArray" },
-  // { DUMP: "myArray" }
+  { DIM: ["myArray", 2, 3, 4] },
   { SET: ["i", 1] },
   {
-    FOR: ["y", 0, 2, 1],
+    FOR: ["z", 0, 3, 1],
     script: [
       {
-        FOR: ["x", 0, 2, 1],
+        FOR: ["y", 0, 2, 1],
         script: [
-          { SET: ["myArray", { x: null }, { y: null }, { i: null }] },
-          { INC: "i" }
+          {
+            FOR: ["x", 0, 1, 1],
+            script: [
+              { SET: ["myArray", { x: null }, { y: null }, { z: null }, { i: null }] },
+              { INC: "i" }
+            ]
+          }
         ]
-      }
+      },
     ]
   },
-  { DUMP: "myArray" },
+
+  { DUMP: ["myArray", 2] },
   {
-    FOR: ["y", 0, 2, 1],
+    FOR: ["z", 0, 3, 1],
     script: [
       {
-        FOR: ["x", 0, 2, 1],
+        FOR: ["y", 0, 2, 1],
         script: [
-          // { PRINT: [{ x: null }, ",", { y: null }] },
-          { PRINT: { myArray: [{ x: null }, { y: null }] } }
+          {
+            FOR: ["x", 0, 1, 1],
+            script: [
+              { PRINT: { myArray: [{ x: null }, { y: null }, { z: null }] } }
+            ]
+          }
         ]
-      }
+      },
     ]
-  }
+  },
 ];
 
 basin.start(program2);

@@ -17,9 +17,9 @@ module.exports = {
     var variable = this.find(key);
     variable[key][0][0] = "poop";
   },
-  DIM2: function(key) {
+  DIM: function(key) {
     var args = Array.prototype.slice.call(arguments);
-    var size = args.slice(1, args.length);
+    var size = args.slice(1, args.length).reverse();
     // var value = args[args.length - 1];
 
     var obj = {};
@@ -70,10 +70,10 @@ module.exports = {
 
     this.Stack.push(obj);
   },
-  DUMP: function(key) {
+  DUMP: function(key, spacing) {
     var variable = this.find(key);
     if (variable) {
-      console.log(JSON.stringify(variable, 2, 2));
+      console.log(JSON.stringify(variable, null, spacing));
     }
   },
   RETURN: function(value) {
@@ -98,11 +98,10 @@ module.exports = {
     } else {
       if (Array.isArray(variable[key])) {
         var args = Array.prototype.slice.call(arguments);
-        var index = args.slice(1, args.length - 1).reverse();
+        var index = args.slice(1, args.length - 1);
         var value = args[args.length - 1];
 
-        setIndex(variable[key], index);
-        console.log("var", variable[key]);
+        setIndex(variable[key], index.reverse());
 
         function setIndex(variable, index) {
           if (index.length > 1) {
@@ -114,23 +113,6 @@ module.exports = {
       } else {
         variable[key] = value;
       }
-    }
-  },
-  SET2: function(key) {
-    var variable = this.find(key);
-
-    if (variable && Array.isArray(variable[key])) {
-      // If variable is an array, set the value at the specified index
-      variable[key][arguments[1]] = arguments[2];
-    } else {
-      // if no variable was found in the stack, define one
-      console.log("no variable found, definig one");
-      if (variable == null) {
-        this.Stack.push({ [key]: arguments[1] });
-        variable = this.find(key);
-      }
-      // Set the variable value
-      variable[key] = value;
     }
   },
   INC: function(key) {
