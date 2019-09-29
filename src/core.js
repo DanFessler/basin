@@ -1,34 +1,23 @@
 module.exports = {
-  TEST: function() {
-    console.log(this.test());
-  },
   LET: function(key, value) {
+    // TODO:
+    // Should prevent redefining in-scope variable
+
     var obj = {};
     obj[key] = value;
     this.Stack.push(obj);
   },
-  DIM: function(key, size, value) {
-    var obj = {};
-    obj[key] = Array(size);
-    obj[key].fill(value);
-    this.Stack.push(obj);
-  },
-  TEST: function(key) {
-    var variable = this.find(key);
-    variable[key][0][0] = "poop";
-  },
   DIM: function(key) {
+    // TODO:
+    // Should prevent redefining in-scope Array
+
     var args = Array.prototype.slice.call(arguments);
     var size = args.slice(1, args.length).reverse();
-    // var value = args[args.length - 1];
 
     var obj = {};
     obj[key] = makeArray(size);
     this.Stack.push(obj);
 
-    // TODO:
-    // this is where I left off
-    // trying to fix an issue where each row was referring to the same object
     function makeArray(size) {
       let arr = [...Array(size[0])];
       if (size.length > 1) {
