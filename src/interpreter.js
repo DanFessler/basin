@@ -151,7 +151,7 @@ class Basin {
         // TODO:
         // Array access needs to be multi-dimensional
         let returnVal = getIndex(match[keyword], params.reverse());
-        if (returnVal) {
+        if (returnVal !== undefined) {
           return returnVal;
         } else {
           throw {
