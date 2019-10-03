@@ -125,6 +125,7 @@ class Basin {
     if (!expression || typeof expression != "object") return expression;
 
     // if expression is a script, run it
+    // this is used to evaluate a list of arguments typically
     if (Array.isArray(expression)) {
       return yield* this.runScript(expression.slice(), init);
     }

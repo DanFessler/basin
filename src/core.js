@@ -25,7 +25,7 @@ module.exports = {
           arr[i] = makeArray(size.slice(1));
         });
       } else {
-        arr.fill(null);
+        arr.fill(0);
       }
       return arr;
     }

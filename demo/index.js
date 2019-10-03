@@ -73,12 +73,20 @@ let program2 = [
           {
             FOR: ["x", 0, 1, 1],
             script: [
-              { SET: ["myArray", { x: null }, { y: null }, { z: null }, { i: null }] },
+              {
+                SET: [
+                  "myArray",
+                  { x: null },
+                  { y: null },
+                  { z: null },
+                  { i: null }
+                ]
+              },
               { INC: "i" }
             ]
           }
         ]
-      },
+      }
     ]
   },
 
@@ -96,9 +104,44 @@ let program2 = [
             ]
           }
         ]
-      },
+      }
     ]
-  },
+  }
 ];
 
-basin.start(program2);
+let program3 = [
+  {
+    PRINT: "hello world"
+  },
+  {
+    DIM: ["myArray", 10]
+  },
+  {
+    SET: [
+      {
+        myArray: [0]
+      },
+      "poop"
+    ]
+  },
+  {
+    SET: [
+      {
+        myArray: [1]
+      },
+      "cheese"
+    ]
+  },
+  {
+    PRINT: {
+      myArray: [0]
+    }
+  },
+  {
+    PRINT: {
+      myArray: [1]
+    }
+  }
+];
+
+basin.start(program3);
