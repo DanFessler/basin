@@ -44,7 +44,7 @@ In this example we define a variable with the `LET` command which takes two para
 ```JSON
 [
   {
-    "FOR": ["i", 1, 100, 1],
+    "FOR": ["i", 1, 10, 1],
     "script": [
       { "PRINT": {"i": null} }
     ]
@@ -52,7 +52,7 @@ In this example we define a variable with the `LET` command which takes two para
 ]
 ```
 
-This program prints the numbers 1 to 10 to the console using the `REPEAT` command. Any command which executes a script such as loops takes a special object property called "script" who's value is a `script` array.
+This program prints the numbers 1 to 10 to the console using the `FOR` command. Any command which executes a script such as loops takes a special object property called "script" who's value is a `script` array.
 
 #### Functions:
 
