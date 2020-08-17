@@ -3,6 +3,10 @@
 A lightweight AST (abstract syntax tree) interpreter built in javascript.  
 **BASIN** is an acronym for Basic Abstract Syntax Interpreter.
 
+# Implementations
+- [Basic.js](https://github.com/DanFessler/Basic.js) A dialect of BASIC for the browser
+- [Funky](https://github.com/DanFessler/bason-funky) A function-oriented syntax for BASON
+
 # Syntax
 
 While BASIN does not include a parser, You can write programs directly in **BASON**.
