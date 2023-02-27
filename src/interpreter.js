@@ -39,14 +39,16 @@ class Basin {
         if (delay) {
           setTimeout(this.run.bind(this, startState, delay), delay);
         } else {
-          if (!typeof window) {
-            window.requestAnimationFrame(this.run.bind(this, startState));
+          if (typeof window === "undefined") {
+            setImmediate(this.run.bind(this, startState, delay));
           } else {
-            setImmediate(this.run.bind(this, startState));
+            window.requestAnimationFrame(
+              this.run.bind(this, startState, delay)
+            );
           }
         }
       } else {
-        console.log("done");
+        console.log("DONE");
       }
     } catch (e) {
       if (e.status === "error") console.error("ERROR:", e.result);
