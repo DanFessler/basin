@@ -24,7 +24,7 @@ class Basin {
     console.log("START");
     this.startTime = Date.now();
     this.Gen = this.runScript(script);
-    this.run(this.Stack.slice(), delay);
+    this.run([...this.Stack], delay);
   }
 
   run(startState, delay) {
@@ -60,6 +60,7 @@ class Basin {
 
   stop() {
     console.log("STOP");
+    this.shouldUpdate = true;
     this.Gen = null;
   }
 
