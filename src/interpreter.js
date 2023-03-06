@@ -15,15 +15,14 @@ class Basin {
   }
 
   import(plugin, newThis) {
-    Object.keys(plugin).forEach(key => {
+    Object.keys(plugin).forEach((key) => {
       this.Stack.push({
-        [key]: newThis ? plugin[key].bind(newThis) : plugin[key]
+        [key]: newThis ? plugin[key].bind(newThis) : plugin[key],
       });
     });
   }
 
   start(script, delay) {
-    console.log("START");
     this.startTime = Date.now();
     this.Gen = this.runScript(script);
     this.run([...this.Stack], delay);
@@ -49,19 +48,13 @@ class Basin {
             );
           }
         }
-      } else {
-        console.log("DONE");
       }
     } catch (e) {
-      if (e.status === "error") console.error("ERROR:", e.result);
-      else {
-        console.log(e);
-      }
+      throw e;
     }
   }
 
   stop() {
-    console.log("STOP");
     this.shouldUpdate = true;
     this.Gen = null;
   }
@@ -95,10 +88,17 @@ class Basin {
 
     // iterate over the script
     for (var i = 0; i < script.length; i++) {
+      this.tok = script[i];
       try {
-        script[i] = yield* this.evaluate(script[i]);
+        script[i] = yield * this.evaluate(script[i]);
       } catch (e) {
-        // console.error(e);
+        console.log("CATCHING", e, !e.status, this.tok);
+        // because scripts are recursive, these error messages would also be
+        // so we must ensure we only wrap them up once
+        if (!e.status) {
+          e = { status: "Runtime Error", result: e, token: this.tok.token };
+        }
+
         throw e;
       }
     }
@@ -120,7 +120,9 @@ class Basin {
     }
 
     // if no match was found, log an error
-    if (showError) console.error(`KEY NOT FOUND: '${keyword}'`);
+    if (showError) {
+      throw `'${keyword}' is not defined!`;
+    }
 
     return null;
   }
@@ -159,10 +161,7 @@ class Basin {
         if (returnVal !== undefined) {
           return returnVal;
         } else {
-          throw {
-            status: "error",
-            result: "RUNTIME ERROR: Tried to access out of range index"
-          };
+          throw "Tried to access out of range index!";
         }
         function getIndex(variable, index) {
           if (index.length > 1) {
