@@ -49,16 +49,16 @@ let program1 = [
       { DIM: ["arr", 3] },
       { SET: ["arr", 0, "hello world!"] },
       { SET: ["arr", 1, "hello cheese!"] },
-      { SET: ["arr", 2, "hello poop!"] },
+      { SET: ["arr", 2, { name: null }] },
       // { PRINT: { arr: 1 } }
       {
         FOR: ["i", 0, 2, 1],
-        script: [{ PRINT: { arr: { i: null } } }]
-      }
-    ]
+        script: [{ PRINT: { arr: { i: null } } }],
+      },
+    ],
   },
   { GREET: "World!" },
-  { PRINT: "this is test done" }
+  { PRINT: "this is test done" },
 ];
 
 let program2 = [
@@ -79,15 +79,15 @@ let program2 = [
                   { x: null },
                   { y: null },
                   { z: null },
-                  { i: null }
-                ]
+                  { i: null },
+                ],
               },
-              { INC: "i" }
-            ]
-          }
-        ]
-      }
-    ]
+              { INC: "i" },
+            ],
+          },
+        ],
+      },
+    ],
   },
 
   { DUMP: ["myArray", 2] },
@@ -100,48 +100,38 @@ let program2 = [
           {
             FOR: ["x", 0, 1, 1],
             script: [
-              { PRINT: { myArray: [{ x: null }, { y: null }, { z: null }] } }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+              { PRINT: { myArray: [{ x: null }, { y: null }, { z: null }] } },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 let program3 = [
   {
-    PRINT: "hello world"
+    PRINT: "hello world",
   },
   {
-    DIM: ["myArray", 10]
+    DIM: ["myArray", 10],
   },
   {
-    SET: [
-      {
-        myArray: [0]
-      },
-      "poop"
-    ]
+    SET: ["myArray", 0, "poop"],
   },
   {
-    SET: [
-      {
-        myArray: [1]
-      },
-      "cheese"
-    ]
+    SET: ["myArray", 1, "cheese"],
   },
   {
     PRINT: {
-      myArray: [0]
-    }
+      myArray: [0],
+    },
   },
   {
     PRINT: {
-      myArray: [1]
-    }
-  }
+      myArray: [1],
+    },
+  },
 ];
 
-basin.start(program3);
+basin.start(program);
