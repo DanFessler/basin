@@ -3,13 +3,15 @@
 // if only one expression, no need for the array
 // if expression is a literal, no need for the object
 
-let core = require("./core.js");
+let core = require("./plugins/core.js");
+let math = require("./plugins/math.js");
 
 class Basin {
   constructor() {
     this.Stack = [];
     this.shouldUpdate = true;
     this.import(core, this);
+    this.import(math, this);
   }
 
   import(plugin, newThis) {

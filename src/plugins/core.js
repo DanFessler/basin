@@ -1,5 +1,6 @@
 module.exports = {
-  LET: function(key, value) {
+  // declaration
+  LET: function (key, value) {
     // TODO:
     // Should prevent redefining in-scope variable
 
@@ -7,7 +8,7 @@ module.exports = {
     obj[key] = value;
     this.Stack.push(obj);
   },
-  DIM: function(key) {
+  DIM: function (key) {
     // TODO:
     // Should prevent redefining in-scope Array
 
@@ -21,7 +22,7 @@ module.exports = {
     function makeArray(size) {
       let arr = [...Array(size[0])];
       if (size.length > 1) {
-        arr.forEach(function(e, i) {
+        arr.forEach(function (e, i) {
           arr[i] = makeArray(size.slice(1));
         });
       } else {
@@ -30,17 +31,17 @@ module.exports = {
       return arr;
     }
   },
-  FUNCTION: function(key) {
+  FUNCTION: function (key) {
     var args = Array.prototype.slice.call(arguments);
     var params = args.slice(1, args.length - 1);
     var script = args[args.length - 1];
 
     var obj = {};
-    obj[key] = function*() {
+    obj[key] = function* () {
       try {
         yield* this.evaluate(
           script,
-          function(key, value) {
+          function (key, value) {
             for (let i = 0; i < key.length; i++) {
               this.find("LET")["LET"].bind(this)(key[i], value[i]);
             }
@@ -59,16 +60,10 @@ module.exports = {
 
     this.Stack.push(obj);
   },
-  DUMP: function(key, spacing) {
-    var variable = this.find(key);
-    if (variable) {
-      console.log(JSON.stringify(variable, null, spacing));
-    }
-  },
-  RETURN: function(value) {
+  RETURN: function (value) {
     throw { status: "success", result: value };
   },
-  SET: function(key, value) {
+  SET: function (key, value) {
     var variable = this.find(key);
 
     // if no variable was found in the stack
@@ -81,7 +76,7 @@ module.exports = {
         // otherwise, if we're trying to set an array, throw an error
         throw {
           status: "error",
-          result: `Cannot set ${key} at index. Array is undefined.`
+          result: `Cannot set ${key} at index. Array is undefined.`,
         };
       }
     } else {
@@ -104,57 +99,54 @@ module.exports = {
       }
     }
   },
-  INC: function(key) {
+  INC: function (key) {
     var variable = this.find(key);
     variable[key]++;
   },
-  ADD: function(A, B) {
-    return A + B;
-  },
-  SUB: function(A, B) {
-    return A - B;
-  },
-  MUL: function(A, B) {
-    return A * B;
-  },
-  DIV: function(A, B) {
-    return A / B;
-  },
-  MOD: function(A, B) {
-    return A % B;
-  },
-  "==": function(A, B) {
+
+  // comparison operators
+  "==": function (A, B) {
     return A == B;
   },
-  "<>": function(A, B) {
+  "<>": function (A, B) {
     return A != B;
   },
-  ">": function(A, B) {
+  ">": function (A, B) {
     return A > B;
   },
-  "<": function(A, B) {
+  "<": function (A, B) {
     return A < B;
   },
-  ">=": function(A, B) {
+  ">=": function (A, B) {
     return A >= B;
   },
-  "<=": function(A, B) {
+  "<=": function (A, B) {
     return A <= B;
   },
-  AND: function(A, B) {
+  AND: function (A, B) {
     return A && B;
   },
-  OR: function(A, B) {
+  OR: function (A, B) {
     return A || B;
   },
-  PRINT: function() {
+
+  // output
+  PRINT: function () {
     var string = "";
     for (var i = 0; i < arguments.length; i++) {
       string += arguments[i] != null ? arguments[i] : "";
     }
     console.log(string);
   },
-  FOR: function*(key, start, end, step, script) {
+  DUMP: function (key, spacing) {
+    var variable = this.find(key);
+    if (variable) {
+      console.log(JSON.stringify(variable, null, spacing));
+    }
+  },
+
+  // loops
+  FOR: function* (key, start, end, step, script) {
     let startTime = Date.now();
     let variable = { [key]: start };
     this.Stack.push(variable);
@@ -165,14 +157,14 @@ module.exports = {
       yield* this.update(this.shouldUpdate);
     }
   },
-  IF: function*(condition, script) {
+  IF: function* (condition, script) {
     if (condition) {
       yield* this.evaluate(script[0]);
     } else {
       if (script[1]) yield* this.evaluate(script[1]);
     }
   },
-  WHILE: function*(condition, script) {
+  WHILE: function* (condition, script) {
     let startTime = Date.now();
     while (yield* this.evaluate(script[0][0])) {
       yield* this.evaluate(script[1]);
@@ -181,14 +173,16 @@ module.exports = {
       yield* this.update(this.shouldUpdate);
     }
   },
-  SUSPENDUPDATE: function() {
+
+  // update
+  SUSPENDUPDATE: function () {
     this.shouldUpdate = false;
   },
-  RESUMEUPDATE: function*() {
+  RESUMEUPDATE: function* () {
     this.shouldUpdate = true;
     yield* this.update(true);
   },
-  UPDATE: function*() {
+  UPDATE: function* () {
     yield* this.update(true);
-  }
+  },
 };
